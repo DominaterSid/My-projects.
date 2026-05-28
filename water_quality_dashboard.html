@@ -1,0 +1,405 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .app { font-family: 'Jost', sans-serif; min-height: 600px; background: transparent; }
+
+  /* LOGIN */
+  .login-screen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 600px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1208 50%, #0a0a0a 100%);
+    border-radius: 16px;
+    position: relative; overflow: hidden;
+  }
+  .login-screen::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(212,175,55,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .login-card {
+    width: 360px; padding: 48px 40px;
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid rgba(212,175,55,0.3);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    position: relative; z-index: 1;
+  }
+  .login-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+    color: rgba(212,175,55,0.6); text-align: center; margin-bottom: 8px;
+  }
+  .login-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 500; color: #f0e6c8;
+    text-align: center; margin-bottom: 4px;
+  }
+  .login-sub { font-size: 12px; color: rgba(212,175,55,0.5); text-align: center; margin-bottom: 36px; letter-spacing: 1px; }
+  .login-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(212,175,55,0.5); display: block; margin-bottom: 8px; }
+  .login-input {
+    width: 100%; padding: 12px 16px; margin-bottom: 20px;
+    background: rgba(255,255,255,0.05); border: 0.5px solid rgba(212,175,55,0.25);
+    border-radius: 8px; color: #f0e6c8; font-family: 'Jost', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: rgba(212,175,55,0.6); }
+  .login-input::placeholder { color: rgba(240,230,200,0.2); }
+  .login-btn {
+    width: 100%; padding: 13px; margin-top: 8px;
+    background: linear-gradient(135deg, #b8960c, #d4af37, #b8960c);
+    border: none; border-radius: 8px; color: #0a0a0a;
+    font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .login-btn:active { transform: scale(0.98); }
+  .login-err { font-size: 12px; color: #e24b4a; text-align: center; margin-top: 12px; min-height: 16px; }
+
+  /* DASHBOARD */
+  .dashboard { display: none; flex-direction: column; min-height: 600px; background: #0d0d0d; border-radius: 16px; overflow: hidden; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px;
+    background: rgba(212,175,55,0.04); border-bottom: 0.5px solid rgba(212,175,55,0.15);
+  }
+  .topbar-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: #d4af37; font-weight: 500; }
+  .topbar-user { font-size: 12px; color: rgba(212,175,55,0.5); letter-spacing: 1px; }
+  .logout-btn {
+    font-size: 11px; letter-spacing: 1px; color: rgba(212,175,55,0.4);
+    background: none; border: 0.5px solid rgba(212,175,55,0.2);
+    border-radius: 6px; padding: 6px 14px; cursor: pointer; font-family: 'Jost', sans-serif;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { color: #d4af37; border-color: rgba(212,175,55,0.5); }
+
+  .main { display: flex; gap: 0; flex: 1; }
+
+  /* INPUT PANEL */
+  .input-panel {
+    width: 280px; min-width: 280px; padding: 24px 20px;
+    background: rgba(255,255,255,0.02); border-right: 0.5px solid rgba(212,175,55,0.12);
+    overflow-y: auto;
+  }
+  .panel-heading {
+    font-family: 'Cormorant Garamond', serif; font-size: 16px; color: #d4af37;
+    margin-bottom: 20px; padding-bottom: 12px; border-bottom: 0.5px solid rgba(212,175,55,0.15);
+  }
+  .field-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(212,175,55,0.45); display: block; margin-bottom: 6px; margin-top: 14px; }
+  .field-input {
+    width: 100%; padding: 9px 12px;
+    background: rgba(255,255,255,0.04); border: 0.5px solid rgba(212,175,55,0.2);
+    border-radius: 8px; color: #f0e6c8; font-family: 'Jost', sans-serif; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .field-input:focus { border-color: rgba(212,175,55,0.55); }
+  .field-input::placeholder { color: rgba(240,230,200,0.15); }
+  .field-textarea {
+    width: 100%; padding: 9px 12px; height: 72px; resize: none;
+    background: rgba(255,255,255,0.04); border: 0.5px solid rgba(212,175,55,0.2);
+    border-radius: 8px; color: #f0e6c8; font-family: 'Jost', sans-serif; font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .field-textarea:focus { border-color: rgba(212,175,55,0.55); }
+  .submit-btn {
+    width: 100%; margin-top: 20px; padding: 11px;
+    background: linear-gradient(135deg, #b8960c, #d4af37);
+    border: none; border-radius: 8px; color: #0a0a0a;
+    font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .submit-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .submit-btn:active { transform: scale(0.98); }
+
+  /* CHARTS PANEL */
+  .charts-panel { flex: 1; padding: 24px; overflow-y: auto; }
+
+  .metrics-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 24px; }
+  .metric-card {
+    background: rgba(255,255,255,0.03); border: 0.5px solid rgba(212,175,55,0.15);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .metric-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(212,175,55,0.4); margin-bottom: 6px; }
+  .metric-value { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #d4af37; font-weight: 500; }
+  .metric-unit { font-size: 11px; color: rgba(212,175,55,0.4); margin-left: 3px; }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .chart-card {
+    background: rgba(255,255,255,0.025); border: 0.5px solid rgba(212,175,55,0.12);
+    border-radius: 12px; padding: 18px;
+  }
+  .chart-card-full { grid-column: 1 / -1; }
+  .chart-title { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(212,175,55,0.5); margin-bottom: 14px; }
+  .chart-wrap { position: relative; width: 100%; }
+
+  .empty-state {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 320px; color: rgba(212,175,55,0.25); font-size: 13px; letter-spacing: 1px;
+    text-align: center; gap: 10px;
+  }
+  .empty-icon { font-size: 36px; opacity: 0.3; }
+
+  .records-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .records-table th { text-align: left; padding: 8px 10px; color: rgba(212,175,55,0.4); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; border-bottom: 0.5px solid rgba(212,175,55,0.15); font-weight: 400; }
+  .records-table td { padding: 9px 10px; color: rgba(240,230,200,0.75); border-bottom: 0.5px solid rgba(212,175,55,0.06); }
+  .status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 10px; letter-spacing: 1px; }
+  .status-safe { background: rgba(99,153,34,0.15); color: #97c459; }
+  .status-moderate { background: rgba(186,117,23,0.15); color: #efae27; }
+  .status-poor { background: rgba(226,75,74,0.15); color: #f09595; }
+</style>
+
+<div class="app" id="app">
+
+  <!-- LOGIN -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">Aqua Luxe</div>
+      <div class="login-title">Water Quality Monitor</div>
+      <div class="login-sub">Premium Analytics System</div>
+      <label class="login-label">Username</label>
+      <input class="login-input" id="lUser" type="text" placeholder="Enter username" />
+      <label class="login-label">Password</label>
+      <input class="login-input" id="lPass" type="password" placeholder="Enter password" />
+      <button class="login-btn" onclick="doLogin()">Enter</button>
+      <div class="login-err" id="loginErr"></div>
+      <div style="text-align:center;margin-top:18px;font-size:11px;color:rgba(212,175,55,0.3);letter-spacing:1px;">
+        Demo: admin / water123
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard" id="dashboard">
+    <div class="topbar">
+      <div class="topbar-title">Aqua Luxe Monitor</div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div class="topbar-user" id="topUser"></div>
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- INPUT -->
+      <div class="input-panel">
+        <div class="panel-heading">Add Sample Entry</div>
+
+        <label class="field-label">Sample Location</label>
+        <input class="field-input" id="fLocation" placeholder="e.g. River Site A" />
+
+        <label class="field-label">pH Level (0–14)</label>
+        <input class="field-input" id="fPh" type="number" step="0.1" min="0" max="14" placeholder="7.2" />
+
+        <label class="field-label">Turbidity (NTU)</label>
+        <input class="field-input" id="fTurbidity" type="number" step="0.1" min="0" placeholder="1.5" />
+
+        <label class="field-label">Dissolved Oxygen (mg/L)</label>
+        <input class="field-input" id="fDo" type="number" step="0.1" min="0" placeholder="8.4" />
+
+        <label class="field-label">TDS – Total Dissolved Solids (ppm)</label>
+        <input class="field-input" id="fTds" type="number" step="1" min="0" placeholder="450" />
+
+        <label class="field-label">Temperature (°C)</label>
+        <input class="field-input" id="fTemp" type="number" step="0.1" placeholder="22.5" />
+
+        <label class="field-label">Observations / Notes</label>
+        <textarea class="field-textarea" id="fNotes" placeholder="Any visual notes, odor, color..."></textarea>
+
+        <button class="submit-btn" onclick="addEntry()">+ Add Entry</button>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-panel" id="chartsPanel">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">◎</div>
+          <div>No data yet.<br>Add your first water sample to see charts.</div>
+        </div>
+        <div id="dataView" style="display:none;">
+          <div class="metrics-row">
+            <div class="metric-card"><div class="metric-label">Samples</div><div class="metric-value" id="mCount">0</div></div>
+            <div class="metric-card"><div class="metric-label">Avg pH</div><div class="metric-value" id="mPh">—</div></div>
+            <div class="metric-card"><div class="metric-label">Avg DO</div><div class="metric-value" id="mDo">—</div><span class="metric-unit" style="font-size:11px;color:rgba(212,175,55,0.4);">mg/L</span></div>
+            <div class="metric-card"><div class="metric-label">Avg TDS</div><div class="metric-value" id="mTds">—</div><span class="metric-unit" style="font-size:11px;color:rgba(212,175,55,0.4);">ppm</span></div>
+          </div>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <div class="chart-title">pH Levels — by Sample</div>
+              <div class="chart-wrap" style="height:200px;"><canvas id="phChart" role="img" aria-label="pH levels bar chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Water Quality Status</div>
+              <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+                <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(212,175,55,0.5);"><span style="width:10px;height:10px;border-radius:2px;background:#97c459;display:inline-block;"></span>Safe</span>
+                <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(212,175,55,0.5);"><span style="width:10px;height:10px;border-radius:2px;background:#efae27;display:inline-block;"></span>Moderate</span>
+                <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:rgba(212,175,55,0.5);"><span style="width:10px;height:10px;border-radius:2px;background:#e24b4a;display:inline-block;"></span>Poor</span>
+              </div>
+              <div class="chart-wrap" style="height:165px;"><canvas id="pieChart" role="img" aria-label="Water quality status pie chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Turbidity (NTU)</div>
+              <div class="chart-wrap" style="height:200px;"><canvas id="turbChart" role="img" aria-label="Turbidity bar chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Dissolved Oxygen (mg/L)</div>
+              <div class="chart-wrap" style="height:200px;"><canvas id="doChart" role="img" aria-label="Dissolved oxygen bar chart"></canvas></div>
+            </div>
+            <div class="chart-card chart-card-full">
+              <div class="chart-title">Recent Records</div>
+              <table class="records-table">
+                <thead><tr><th>Location</th><th>pH</th><th>Turbidity</th><th>DO</th><th>TDS</th><th>Temp</th><th>Status</th><th>Notes</th></tr></thead>
+                <tbody id="recordsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+  const USERS = { admin: 'water123', guest: 'aqua2024' };
+  let loggedUser = '';
+  let entries = [];
+  let phC, pieC, turbC, doC;
+
+  function doLogin() {
+    const u = document.getElementById('lUser').value.trim();
+    const p = document.getElementById('lPass').value;
+    if (USERS[u] && USERS[u] === p) {
+      loggedUser = u;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'flex';
+      document.getElementById('topUser').textContent = u.toUpperCase();
+    } else {
+      document.getElementById('loginErr').textContent = 'Invalid credentials. Try admin / water123';
+    }
+  }
+
+  document.getElementById('lPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('lUser').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+  function doLogout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('lUser').value = '';
+    document.getElementById('lPass').value = '';
+    document.getElementById('loginErr').textContent = '';
+  }
+
+  function getStatus(ph, turb, doVal) {
+    let score = 0;
+    if (ph >= 6.5 && ph <= 8.5) score++;
+    if (turb < 4) score++;
+    if (doVal >= 6) score++;
+    if (score === 3) return 'safe';
+    if (score === 2) return 'moderate';
+    return 'poor';
+  }
+
+  function addEntry() {
+    const loc = document.getElementById('fLocation').value.trim() || 'Unknown';
+    const ph = parseFloat(document.getElementById('fPh').value);
+    const turb = parseFloat(document.getElementById('fTurbidity').value);
+    const doVal = parseFloat(document.getElementById('fDo').value);
+    const tds = parseFloat(document.getElementById('fTds').value);
+    const temp = parseFloat(document.getElementById('fTemp').value);
+    const notes = document.getElementById('fNotes').value.trim();
+
+    if (isNaN(ph) || isNaN(turb) || isNaN(doVal)) {
+      alert('Please fill in at least pH, Turbidity, and Dissolved Oxygen.');
+      return;
+    }
+
+    entries.push({ loc, ph, turb, doVal, tds: isNaN(tds)?null:tds, temp: isNaN(temp)?null:temp, notes, status: getStatus(ph, turb, doVal) });
+    clearForm();
+    renderDashboard();
+  }
+
+  function clearForm() {
+    ['fLocation','fPh','fTurbidity','fDo','fTds','fTemp','fNotes'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  const GOLD = '#d4af37'; const GOLD2 = '#b8960c'; const GOLD3 = 'rgba(212,175,55,0.25)';
+  const SAFE = '#97c459'; const MOD = '#efae27'; const POOR = '#e24b4a';
+
+  const baseOpts = (yLabel) => ({
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1208', titleColor: GOLD, bodyColor: 'rgba(240,230,200,0.8)', borderColor: GOLD3, borderWidth: 1 } },
+    scales: {
+      x: { ticks: { color: 'rgba(212,175,55,0.45)', font: { size: 11 } }, grid: { color: 'rgba(212,175,55,0.06)' } },
+      y: { ticks: { color: 'rgba(212,175,55,0.45)', font: { size: 11 } }, grid: { color: 'rgba(212,175,55,0.08)' }, title: { display: !!yLabel, text: yLabel, color: 'rgba(212,175,55,0.4)', font:{size:10} } }
+    }
+  });
+
+  function renderDashboard() {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('dataView').style.display = 'block';
+
+    const n = entries.length;
+    const avgPh = (entries.reduce((s,e)=>s+e.ph,0)/n).toFixed(2);
+    const avgDo = (entries.reduce((s,e)=>s+e.doVal,0)/n).toFixed(2);
+    const avgTds = entries.filter(e=>e.tds!==null);
+    document.getElementById('mCount').textContent = n;
+    document.getElementById('mPh').textContent = avgPh;
+    document.getElementById('mDo').textContent = avgDo;
+    document.getElementById('mTds').textContent = avgTds.length ? Math.round(avgTds.reduce((s,e)=>s+e.tds,0)/avgTds.length) : '—';
+
+    const labels = entries.map((e,i)=>`#${i+1} ${e.loc.substring(0,8)}`);
+
+    const phColors = entries.map(e => e.ph < 6.5 || e.ph > 8.5 ? POOR : GOLD);
+    rebuildChart('phChart', 'phC', 'bar', labels, entries.map(e=>e.ph), phColors, 'pH', baseOpts('pH'));
+    rebuildChart('turbChart', 'turbC', 'bar', labels, entries.map(e=>e.turb), entries.map(e=>e.turb>4?POOR:MOD), 'Turbidity', baseOpts('NTU'));
+    rebuildChart('doChart', 'doC', 'bar', labels, entries.map(e=>e.doVal), entries.map(e=>e.doVal<6?POOR:SAFE), 'DO', baseOpts('mg/L'));
+
+    const safe = entries.filter(e=>e.status==='safe').length;
+    const mod = entries.filter(e=>e.status==='moderate').length;
+    const poor = entries.filter(e=>e.status==='poor').length;
+    rebuildPie('pieChart', 'pieC', [safe,mod,poor], ['Safe','Moderate','Poor'], [SAFE,MOD,POOR]);
+
+    const tbody = document.getElementById('recordsBody');
+    tbody.innerHTML = '';
+    [...entries].reverse().forEach((e,i) => {
+      const idx = entries.length - i;
+      const badgeCls = e.status==='safe'?'status-safe':e.status==='moderate'?'status-moderate':'status-poor';
+      tbody.innerHTML += `<tr>
+        <td>${e.loc}</td>
+        <td>${e.ph.toFixed(1)}</td>
+        <td>${e.turb.toFixed(1)}</td>
+        <td>${e.doVal.toFixed(1)}</td>
+        <td>${e.tds !== null ? e.tds : '—'}</td>
+        <td>${e.temp !== null ? e.temp+'°' : '—'}</td>
+        <td><span class="status-badge ${badgeCls}">${e.status}</span></td>
+        <td style="color:rgba(240,230,200,0.45);font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.notes||'—'}</td>
+      </tr>`;
+    });
+  }
+
+  const chartRefs = {};
+  function rebuildChart(canvasId, refKey, type, labels, data, colors, label, opts) {
+    if (chartRefs[refKey]) chartRefs[refKey].destroy();
+    chartRefs[refKey] = new Chart(document.getElementById(canvasId), {
+      type, data: { labels, datasets: [{ label, data, backgroundColor: colors, borderColor: colors, borderWidth: type==='line'?2:0, borderRadius: 4, tension: 0.4 }] }, options: opts
+    });
+  }
+  function rebuildPie(canvasId, refKey, data, labels, colors) {
+    if (chartRefs[refKey]) chartRefs[refKey].destroy();
+    chartRefs[refKey] = new Chart(document.getElementById(canvasId), {
+      type: 'doughnut',
+      data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { backgroundColor: '#1a1208', titleColor: GOLD, bodyColor: 'rgba(240,230,200,0.8)', borderColor: GOLD3, borderWidth: 1 }
+        }
+      }
+    });
+  }
+</script>
